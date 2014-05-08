@@ -11,20 +11,7 @@ import akka.actor.PoisonPill
 import akka.actor.Props
 
 import com.redis.{ PubSubMessage, S, U, M, E}
-
-/*
-import com.redis.RedisClient
-import com.redis.RedisClientPool
-import java.net.URI
-import java.io.OutputStream
-import play.api.Play
-import play.api.Play.current
-import play.api.Logger
-import play.api.libs.concurrent.Akka
-import akka.actor.Props
-import akka.actor.Actor
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-*/
+import roomframework.room.RoomChannel
 
 class PubSubChannel(redis: RedisService, channel: String,
   send: Option[String => String] = None,
@@ -33,7 +20,7 @@ class PubSubChannel(redis: RedisService, channel: String,
   exception: Option[Throwable => Unit] = None,
   subscribe: Option[(String, Int) => Unit] = None,
   unsubscribe: Option[(String, Int) => Unit] = None
-  ) {
+  ) extends RoomChannel {
   
   private val (msgEnumerator, msgChannel) = Concurrent.broadcast[String]
   private val pub = Akka.system.actorOf(Props(new Publisher(redis)))
@@ -83,7 +70,7 @@ class PubSubChannel(redis: RedisService, channel: String,
     pub ! Publish(channel, msg)
   }
   
-  def close = {
+  override def close = {
     Logger.info("close redis channel: " + channel)
     sub.unsubscribe
     pub ! PoisonPill

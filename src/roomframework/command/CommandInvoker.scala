@@ -1,10 +1,11 @@
-package roomframework
+package roomframework.command
 
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.iteratee.Iteratee
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import com.fasterxml.jackson.core.JsonParseException
 import java.nio.channels.ClosedChannelException
 
 class CommandInvoker extends CommandHandler {
@@ -23,9 +24,11 @@ class CommandInvoker extends CommandHandler {
   }
 
   protected def onDisconnect: Unit = {}
+  protected def onParseError(msg: String, e: JsonParseException): Unit = {
+    e.printStackTrace
+  }
 
-  val (out, channel) = Concurrent.broadcast[String]
-  val in = Iteratee.foreach[String] { msg =>
+  protected def handleMessage(msg: String): Unit = {
     try {
       val command = Command.fromJson(msg)
       val res = handle(command)
@@ -34,10 +37,16 @@ class CommandInvoker extends CommandHandler {
       }
     } catch {
       case e: ClosedChannelException => //Ignore
+      case e: JsonParseException =>
+        onParseError(msg, e)
       case e: Exception =>
         e.printStackTrace
     }
-  }.map(_ => onDisconnect)
+  }
+
+  val (out, channel) = Concurrent.broadcast[String]
+  val in = Iteratee.foreach[String](handleMessage)
+    .map(_ => onDisconnect)
 
   def handle(command: Command): CommandResponse = {
     val start = System.currentTimeMillis

@@ -1,4 +1,4 @@
-package roomframework
+package roomframework.command
 
 import play.api.libs.json._
 

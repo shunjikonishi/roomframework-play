@@ -1,4 +1,4 @@
-package roomframework
+package roomframework.command
 
 trait CommandBroadcast {
 
