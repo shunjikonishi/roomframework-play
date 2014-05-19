@@ -6,8 +6,8 @@ class DefaultRoom(val name: String) extends Room {
 
 object DefaultRoom {
   def apply(name: String) = new DefaultRoom(name)
+}
 
-  lazy val factory = new RoomFactory {
-    def createRoom(name: String) = new DefaultRoom(name)
-  }
+class DefaultRoomFactory extends RoomFactory {
+  def createRoom(name: String) = new DefaultRoom(name)
 }

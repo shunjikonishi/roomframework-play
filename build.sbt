@@ -1,3 +1,5 @@
+organization := "roomframework"
+
 name := "roomframework"
 
 version := "0.9"
