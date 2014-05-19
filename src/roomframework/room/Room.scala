@@ -6,6 +6,7 @@ import akka.actor.PoisonPill
 import akka.util.Timeout
 import akka.pattern.ask
 import scala.concurrent.duration.Duration
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.Future
 import scala.concurrent.Await
 import play.api.Play.current
@@ -15,7 +16,7 @@ import play.api.libs.concurrent.Akka
 
 trait Room {
 
-  implicit val timeout = Timeout(5)
+  implicit val timeout = Timeout(5 seconds)
 
   val name: String
   val channel: RoomChannel

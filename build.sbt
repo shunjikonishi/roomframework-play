@@ -2,7 +2,7 @@ organization := "roomframework"
 
 name := "roomframework"
 
-version := "0.9.1"
+version := "0.9.2"
 
 scalaSource in Compile := baseDirectory.value / "src"	
 

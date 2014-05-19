@@ -22,7 +22,7 @@ import play.api.libs.json.JsString
 
 class RoomManager(factory: RoomFactory) {
   
-  implicit val timeout = Timeout(5)
+  implicit val timeout = Timeout(5 seconds)
   private var rooms = Map.empty[String, Room]
   private val actor = Akka.system.actorOf(Props(new MyActor()))
   
