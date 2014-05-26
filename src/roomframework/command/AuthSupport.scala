@@ -38,22 +38,36 @@ case class CacheTokenProvider(
     token
   }
 }
+
 trait AuthSupport extends CommandHandler { 
   self: CommandInvoker =>
 
-  private val AUTH_COMMAND = "room.auth"
+  private var authCommands: List[String] = Nil
   private var authorized = false
 
   abstract override def handle(command: Command): CommandResponse = {
-    if (authorized || command.name == AUTH_COMMAND) {
+    if (authorized || authCommands.exists(_ == command.name)) {
       super.handle(command)
     } else { 
       command.error("Unauthorized")
     }
   }
 
-  def addAuthTokenProvider(tokenProvider: AuthTokenProvider): Unit = {
-    self.addHandler("room.auth", new AuthCommand(tokenProvider))
+  def addAuthTokenProvider(name: String, tokenProvider: AuthTokenProvider): Unit = {
+    authCommands = name :: authCommands
+    self.addHandler(name, new AuthCommand(tokenProvider))
+  }
+
+  def addAuthHandler(name: String)(handler: Command => (Boolean, CommandResponse)): Unit = {
+    authCommands = name :: authCommands
+    val h = CommandHandler { command =>
+      val (ret, res) = handler(command)
+      if (ret) {
+        authorized = true
+      }
+      res
+    }
+    self.addHandler(name, h)
   }
 
   private class AuthCommand(tokenProvider: AuthTokenProvider) extends CommandHandler {
