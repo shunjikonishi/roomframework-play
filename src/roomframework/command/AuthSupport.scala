@@ -6,8 +6,8 @@ import play.api.cache._
 import play.api.Play.current
 
 trait AuthTokenProvider {
-  def getCurrentToken: String
-  def getNextToken: String
+  def currentToken: String
+  def nextToken: String
 }
 
 case class RedisTokenProvider(
@@ -15,10 +15,10 @@ case class RedisTokenProvider(
   sessionId: String, 
   expiration: Int = 60 * 60 * 2) extends AuthTokenProvider 
 {
-  def getCurrentToken: String = {
-    redis.get(sessionId + "#rfAuthToken").getOrElse(getNextToken)
+  def currentToken: String = {
+    redis.get(sessionId + "#rfAuthToken").getOrElse(nextToken)
   }
-  def getNextToken: String = {
+  def nextToken: String = {
     val token = UUID.randomUUID().toString
     redis.setex(sessionId + "#rfAuthToken", expiration, token)
     token
@@ -29,10 +29,10 @@ case class CacheTokenProvider(
   sessionId: String,
   expiration: Int = 60 * 60 * 2) extends AuthTokenProvider 
 {
-  def getCurrentToken: String = {
-    Cache.getAs[String](sessionId + "#rfAuthToken").getOrElse(getNextToken)
+  def currentToken: String = {
+    Cache.getAs[String](sessionId + "#rfAuthToken").getOrElse(nextToken)
   }
-  def getNextToken: String = {
+  def nextToken: String = {
     val token = UUID.randomUUID().toString
     Cache.set(sessionId + "#rfAuthToken", token, expiration)
     token
@@ -73,9 +73,9 @@ trait AuthSupport extends CommandHandler {
   private class AuthCommand(tokenProvider: AuthTokenProvider) extends CommandHandler {
     override def handle(command: Command) = {
       val token = command.data.as[String]
-      if (token == tokenProvider.getCurrentToken) {
+      if (token == tokenProvider.currentToken) {
         authorized = true
-        command.text(tokenProvider.getNextToken)
+        command.text(tokenProvider.nextToken)
       } else {
         command.error("Invalid authToken")
       }
