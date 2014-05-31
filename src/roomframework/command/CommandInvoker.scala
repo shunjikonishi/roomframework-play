@@ -43,6 +43,10 @@ class CommandInvoker extends CommandHandler {
     }
   }
 
+  def send(res: CommandResponse): Unit = {
+    channel.push(res.toString)
+  }
+
   val (out, channel) = Concurrent.broadcast[String]
   val in = Iteratee.foreach[String](handleMessage)
     .map(_ => onDisconnect)
