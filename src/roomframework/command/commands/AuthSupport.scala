@@ -40,15 +40,15 @@ case class CacheTokenProvider(
   }
 }
 
-trait AuthSupport { 
-  self: CommandInvoker =>
+trait AuthSupport extends CommandInvoker { 
 
   private var authCommands: List[String] = Nil
   private var authorized = false
 
   abstract override def handle(command: Command): CommandResponse = {
+println("test1: " + command.name)
     if (authorized || authCommands.exists(_ == command.name)) {
-      self.handle(command)
+      super.handle(command)
     } else { 
       command.error("Unauthorized")
     }
@@ -56,7 +56,7 @@ trait AuthSupport {
 
   def addAuthTokenProvider(name: String, tokenProvider: AuthTokenProvider): Unit = {
     authCommands = name :: authCommands
-    self.addHandler(name, new AuthCommand(tokenProvider))
+    addHandler(name, new AuthCommand(tokenProvider))
   }
 
   def addAuthHandler(name: String)(handler: Command => (Boolean, CommandResponse)): Unit = {
@@ -68,7 +68,7 @@ trait AuthSupport {
       }
       res
     }
-    self.addHandler(name, h)
+    addHandler(name, h)
   }
 
   private class AuthCommand(tokenProvider: AuthTokenProvider) extends CommandHandler {

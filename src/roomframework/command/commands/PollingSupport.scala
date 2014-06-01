@@ -8,8 +8,7 @@ import play.api.Play.current
 import roomframework.command._
 import scala.concurrent.duration._
 
-trait PollingSupport {
-  self: CommandInvoker =>
+trait PollingSupport extends CommandInvoker {
 
   private var name = "noop"
   private var interval = 30
@@ -17,7 +16,7 @@ trait PollingSupport {
 
   abstract override def onDisconnect: Unit = {
     stopPolling
-    self.onDisconnect
+    super.onDisconnect
   }
 
   def startPolling(interval: Int = interval, name: String = name) = {

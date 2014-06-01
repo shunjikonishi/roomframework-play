@@ -12,6 +12,8 @@ class RoomHandler(room: Room) extends CommandInvoker {
   
   private var filterList: List[MessageFilter] = List.empty[MessageFilter]
 
+  def broadcast(res: CommandResponse) = room.broadcast(res.copy(id=None).toString)
+  
   def addBroadcastFilter(filter: MessageFilter) = {
     filterList = filter :: filterList
   }
