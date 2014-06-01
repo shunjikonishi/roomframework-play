@@ -1,9 +1,10 @@
-package roomframework.command
+package roomframework.command.commands
 
 import java.util.UUID
 import roomframework.redis.RedisService
 import play.api.cache._
 import play.api.Play.current
+import roomframework.command._
 
 trait AuthTokenProvider {
   def currentToken: String
@@ -39,7 +40,7 @@ case class CacheTokenProvider(
   }
 }
 
-trait AuthSupport extends CommandHandler { 
+trait AuthSupport { 
   self: CommandInvoker =>
 
   private var authCommands: List[String] = Nil
@@ -47,7 +48,7 @@ trait AuthSupport extends CommandHandler {
 
   abstract override def handle(command: Command): CommandResponse = {
     if (authorized || authCommands.exists(_ == command.name)) {
-      super.handle(command)
+      self.handle(command)
     } else { 
       command.error("Unauthorized")
     }
