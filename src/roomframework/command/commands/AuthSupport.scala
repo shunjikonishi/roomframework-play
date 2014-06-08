@@ -46,7 +46,6 @@ trait AuthSupport extends CommandInvoker {
   private var authorized = false
 
   abstract override def handle(command: Command): CommandResponse = {
-println("test1: " + command.name)
     if (authorized || authCommands.exists(_ == command.name)) {
       super.handle(command)
     } else { 
