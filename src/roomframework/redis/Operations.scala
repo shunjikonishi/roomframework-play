@@ -45,14 +45,14 @@ trait Operations {
 
   //Operations
   def sort[A](key:String, 
-              limit:Option[Pair[Int, Int]] = None, 
+              limit:Option[(Int, Int)] = None, 
               desc:Boolean = false, 
               alpha:Boolean = false, 
               by:Option[String] = None, 
               get:List[String] = Nil)(implicit format:Format, parse:Parse[A]):Option[List[Option[A]]] =
     withClient(_.sort[A](key, limit, desc, alpha, by, get))
   def sortNStore[A](key:String, 
-              limit:Option[Pair[Int, Int]] = None, 
+              limit:Option[(Int, Int)] = None, 
               desc:Boolean = false, 
               alpha:Boolean = false, 
               by:Option[String] = None, 
