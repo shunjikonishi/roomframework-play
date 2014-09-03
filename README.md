@@ -55,7 +55,8 @@ object Application extends Controller {
   val rm = RoomManager(new DefaultRoomFactory())
 
   def ws(roomName: String) = WebSocket.using[String] { implicit request =>
-    val handler: RoomHandler = rm.join(roomName)
+    val room = rm.join(roomName)
+    val handler = new RoomHandler(roomName)
     handler.addHandler("chat") { command =>
       broadcast(command.json(command.data))
       CommandResponse.None
@@ -75,7 +76,8 @@ object Application extends Controller {
   val rm = RoomManager(new RedisRoomFactory(redis))
 
   def ws(roomName: String) = WebSocket.using[String] { implicit request =>
-    val handler: RoomHandler = rm.join(roomName)
+    val room = rm.join(roomName)
+    val handler = new RoomHandler(roomName)
     handler.addHandler("chat") { command =>
       broadcast(command.json(command.data))
       CommandResponse.None
