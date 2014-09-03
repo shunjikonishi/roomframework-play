@@ -26,8 +26,8 @@ class RoomManager(factory: RoomFactory) {
   private var rooms = Map.empty[String, Room]
   private val actor = Akka.system.actorOf(Props(new MyActor()))
   
-  def join(room: String): RoomHandler = {
-    val ret = (actor ? Join(room)).asInstanceOf[Future[RoomHandler]]
+  def join(room: String): Room = {
+    val ret = (actor ? Join(room)).asInstanceOf[Future[Room]]
     Await.result(ret, Duration.Inf)
   }
   
@@ -55,7 +55,7 @@ class RoomManager(factory: RoomFactory) {
       case Join(name) =>
         val room = getRoom(name)
         val cnt = room.join
-        sender ! factory.createHandler(room)
+        sender ! room
     }
     
     override def postStop() = {

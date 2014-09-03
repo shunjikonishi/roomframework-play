@@ -76,3 +76,7 @@ class CommandInvoker extends CommandHandler {
   }
 }
 
+object CommandInvoker {
+
+  def doNothingInvoker = new CommandInvoker()
+}
