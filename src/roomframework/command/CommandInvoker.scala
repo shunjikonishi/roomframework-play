@@ -28,14 +28,15 @@ class CommandInvoker extends CommandHandler {
   }
 
   protected def handleMessage(msg: String): Unit = {
+    val command = Command.fromJson(msg)
+    val res = handle(command)
     try {
-      val command = Command.fromJson(msg)
-      val res = handle(command)
       if (!res.isNone) {
         channel.push(res.toString)
       }
     } catch {
-      case e: ClosedChannelException => //Ignore
+      case e: ClosedChannelException =>
+        Logger.error("Channel closed. Droped message - " + res.toString)
       case e: JsonParseException =>
         onParseError(msg, e)
       case e: Exception =>
@@ -44,7 +45,15 @@ class CommandInvoker extends CommandHandler {
   }
 
   def send(res: CommandResponse): Unit = {
-    channel.push(res.toString)
+    try {
+      channel.push(res.toString)
+    } catch {
+      case e: ClosedChannelException => 
+        Logger.error("Channel closed. Droped message - " + res.toString)
+      case e: Exception =>
+        println("**************************** " + e.toString)
+        e.printStackTrace
+    }
   }
 
   val (out, channel) = Concurrent.broadcast[String]
