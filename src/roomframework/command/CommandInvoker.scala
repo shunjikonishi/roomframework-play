@@ -51,7 +51,6 @@ class CommandInvoker extends CommandHandler {
       case e: ClosedChannelException => 
         Logger.error("Channel closed. Droped message - " + res.toString)
       case e: Exception =>
-        println("**************************** " + e.toString)
         e.printStackTrace
     }
   }
