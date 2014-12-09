@@ -23,7 +23,7 @@ trait Room {
 
   private var connectCount = 0
   private var active = true
-  private val actor = Akka.system.actorOf(Props(new MyActor()))
+  private val actor = Akka.system.actorOf(Props(createActor))
 
 
   def isActive = active
@@ -36,7 +36,8 @@ trait Room {
   private case object RoomDisconnect extends RoomMessage
   private case object RoomClose extends RoomMessage
   
-  private class MyActor extends Actor {
+  protected def createActor = new RoomActor()
+  protected class RoomActor extends Actor {
     def receive = {
       case RoomConnect =>
         connectCount += 1
