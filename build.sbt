@@ -2,7 +2,7 @@ organization := "roomframework"
 
 name := "roomframework"
 
-version := "0.9.3"
+version := "0.9.4-SNAPSHOT"
 
 scalaVersion := "2.11.1"
 
@@ -17,3 +17,5 @@ libraryDependencies ++= Seq(
 )
 
 publishTo := Some(Resolver.file("flect repo",file("../maven-repo"))(Patterns(true, Resolver.mavenStyleBasePattern)))
+
+scalacOptions += "-feature"

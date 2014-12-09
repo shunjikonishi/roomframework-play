@@ -8,6 +8,6 @@ object DefaultRoom {
   def apply(name: String) = new DefaultRoom(name)
 }
 
-class DefaultRoomFactory extends RoomFactory {
+class DefaultRoomFactory extends RoomFactory[DefaultRoom] {
   def createRoom(name: String) = new DefaultRoom(name)
 }

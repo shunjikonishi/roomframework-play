@@ -23,7 +23,7 @@ trait Room {
 
   private var connectCount = 0
   private var active = true
-  private val actor = Akka.system.actorOf(Props(createActor))
+  protected val actor = Akka.system.actorOf(Props(createActor))
 
 
   def isActive = active
@@ -31,10 +31,9 @@ trait Room {
   def memberCount = connectCount
   def broadcast(msg: String) = channel.send(msg)
 
-  private sealed class RoomMessage
-  private case object RoomConnect extends RoomMessage
-  private case object RoomDisconnect extends RoomMessage
-  private case object RoomClose extends RoomMessage
+  private case object RoomConnect 
+  private case object RoomDisconnect 
+  private case object RoomClose 
   
   protected def createActor = new RoomActor()
   protected class RoomActor extends Actor {

@@ -9,6 +9,7 @@ import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.DurationInt
+import scala.language.postfixOps
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import play.api.Logger
@@ -20,23 +21,23 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsString
 
-class RoomManager(factory: RoomFactory) {
+class RoomManager[T <: Room](factory: RoomFactory[T]) {
   
   implicit val timeout = Timeout(5 seconds)
-  private var rooms = Map.empty[String, Room]
+  private var rooms = Map.empty[String, T]
   private val actor = Akka.system.actorOf(Props(new MyActor()))
   
-  def join(room: String): Room = {
-    val ret = (actor ? Join(room)).asInstanceOf[Future[Room]]
+  def join(room: String): T = {
+    val ret = (actor ? Join(room)).asInstanceOf[Future[T]]
     Await.result(ret, Duration.Inf)
   }
   
   protected def terminate() = {
     rooms.values.filter(_.isActive).foreach(_.close)
-    rooms = Map.empty[String, Room]
+    rooms = Map.empty[String, T]
   }
   
-  private def getRoom(name: String): Room = {
+  private def getRoom(name: String): T = {
     val room = rooms.get(name).filter(_.isActive)
     room match {
       case Some(x) => x
@@ -67,5 +68,5 @@ class RoomManager(factory: RoomFactory) {
 } 
 
 object RoomManager {
-  def apply(factory: RoomFactory) = new RoomManager(factory)
+  def apply[T <: Room](factory: RoomFactory[T]) = new RoomManager(factory)
 }

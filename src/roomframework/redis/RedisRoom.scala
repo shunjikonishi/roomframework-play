@@ -13,7 +13,7 @@ object RedisRoom {
   def factory(redis: RedisService) = new RedisRoomFactory(redis)
 }
 
-class RedisRoomFactory(redis: RedisService) extends RoomFactory {
+class RedisRoomFactory(redis: RedisService) extends RoomFactory[RedisRoom] {
   def createRoom(name: String) = new RedisRoom(name, redis)
 }
 

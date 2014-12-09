@@ -1,6 +1,6 @@
 package roomframework.room
 
-trait RoomFactory {
-  def createRoom(name: String): Room
+trait RoomFactory[T <: Room] {
+  def createRoom(name: String): T
 }
 
