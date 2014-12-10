@@ -2,7 +2,7 @@ organization := "roomframework"
 
 name := "roomframework"
 
-version := "0.9.4-SNAPSHOT"
+version := "0.9.4"
 
 scalaVersion := "2.11.1"
 
