@@ -4,7 +4,7 @@ name := "roomframework"
 
 version := "0.9.5"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.10.4"
 
 scalaSource in Compile := baseDirectory.value / "src"	
 
