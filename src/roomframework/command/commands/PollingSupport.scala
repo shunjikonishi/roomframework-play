@@ -7,6 +7,7 @@ import play.api.libs.json._
 import play.api.Play.current
 import roomframework.command._
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 trait PollingSupport extends CommandInvoker {
 

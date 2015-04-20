@@ -13,6 +13,7 @@ import play.api.Play.current
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.concurrent.Akka
+import scala.language.postfixOps
 
 trait Room {
 
